@@ -5,6 +5,8 @@ home: https://github.com/prjemian/stdlogpj
 
 INSTALL
 
+    conda install -c aps-anl-tag stdlogpj
+    conda install -c prjemian stdlogpj
     pip install stdlogpj
 
 USAGE:

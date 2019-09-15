@@ -11,7 +11,7 @@
 # The full license is in the file LICENSE, distributed with this software.
 #-----------------------------------------------------------------------------
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 import sys
 import versioneer
@@ -41,21 +41,19 @@ setup (
     platforms        = 'any',
     install_requires = package.__install_requires__,
     package_dir      = {'': 'src'},
-    packages         = ['stdlogpj', ],
-#     package_data     = {
-#          'spec2nexus': [
-#             'data/02_03_setup_fly/*',
-#             'data/*.*',
-#             'data/Cd*',
-#             'plugins/*.xsd',
-#             'LICENSE.txt',
-#             'diffractometer-geometries.dict',
-#             ],
-#          },
+    packages         = find_packages(),
+    # packages         = [package.__package_name__, ],
+    # package_data     = {
+    #      package.__package_name__: [
+    #         'LICENSE.txt',
+    #         ],
+    #      },
     classifiers      = package.__classifiers__,
     entry_points     = {
          # create & install scripts in <python>/bin
          # 'console_scripts': [],
          #'gui_scripts': [],
     },
+    zip_safe         = package.__zip_safe__,
+    python_requires  = package.__python_version_required__,
 )

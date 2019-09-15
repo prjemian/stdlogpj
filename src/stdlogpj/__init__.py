@@ -26,6 +26,8 @@ __author_name__  = __author__
 __author_email__ = __email__
 __url__          = u'https://github.com/prjemian/stdlogpj'
 __keywords__     = ['python', 'logging']
+__zip_safe__     = True
+__python_version_required__ = ">=3.5"
 
 __install_requires__ = []
 

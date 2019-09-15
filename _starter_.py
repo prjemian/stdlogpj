@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
-from src.stdlogpj import stdlog
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
-logger = stdlog.standard_logging_setup("stdlogpj-demo")
+import stdlogpj.stdlog as stdlogpj
+
+logger = stdlogpj.standard_logging_setup("stdlogpj-demo")
 
 
 def thing1(i):

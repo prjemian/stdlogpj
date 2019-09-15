@@ -32,6 +32,7 @@ setup (
     license          = package.__license__,
     description      = package.__description__,
     long_description = long_description,
+    long_description_content_type = "text/markdown",
     author           = package.__author_name__,
     author_email     = package.__author_email__,
     url              = package.__url__,

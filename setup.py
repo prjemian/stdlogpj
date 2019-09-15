@@ -21,8 +21,10 @@ basedir = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(basedir, 'src', ))
 import stdlogpj as package
 
+
 verbose=1
-long_description = open(os.path.join(basedir, 'README.md'), 'r').read()
+with open(os.path.join(basedir, 'README.md'), 'r') as fp:
+    long_description = fp.read()
 
 
 setup (

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import stdlogpj
+from src.stdlogpj import stdlog
 
-logger = stdlogpj.standard_logging_setup("stdlogpj-demo")
+logger = stdlog.standard_logging_setup("stdlogpj-demo")
 
 
 def thing1(i):

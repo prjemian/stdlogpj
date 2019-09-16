@@ -15,6 +15,7 @@
 
 from .stdlog import standard_logging_setup
 
+
 __author__    = 'Pete R. Jemian'
 __email__     = 'prjemian@gmail.com'
 __copyright__ = '2019, Pete R. Jemian'

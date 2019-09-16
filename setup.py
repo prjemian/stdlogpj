@@ -42,8 +42,17 @@ setup (
     keywords         = package.__keywords__,
     platforms        = 'any',
     install_requires = package.__install_requires__,
-    package_dir      = {'': 'src'},
-    packages         = find_packages(),
+    package_dir      = {
+        '': 'src', 
+        package.__package_name__: 'src/'+package.__package_name__
+        },
+    # packages         = find_packages(),
+    packages         = [package.__package_name__, ],
+    package_data     = {
+         package.__package_name__: [
+            'LICENSE.txt',
+            ],
+         },
     classifiers      = package.__classifiers__,
     entry_points     = {
          # create & install scripts in <python>/bin

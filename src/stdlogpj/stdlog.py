@@ -18,6 +18,8 @@ import os
 LOG_DIR_BASE = ".logs"
 
 
+__all__ = ["standard_logging_setup",]
+
 def standard_logging_setup(logger_name, file_name_base=None):
     """
     standard setup for logging

@@ -8,8 +8,10 @@ python logging done my way
 
 :see: https://docs.python.org/3/library/logging.html
 
-similar project:
-https://github.com/fx-kirin/py-stdlogging
+similar projects:
+
+* https://github.com/fx-kirin/py-stdlogging
+* https://github.com/caproto/caproto/blob/master/caproto/_log.py
 """
 
 import logging

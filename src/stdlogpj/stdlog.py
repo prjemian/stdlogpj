@@ -66,6 +66,7 @@ def standard_logging_setup(logger_name, file_name_base=None):
     logger.addHandler(file_log_handler)
     file_log_format = "|%(asctime)s"
     file_log_format += "|%(levelname)s"
+    file_log_format += "|%(process)d"
     file_log_format += "|%(name)s"
     file_log_format += "|%(module)s"
     file_log_format += "|%(lineno)d"

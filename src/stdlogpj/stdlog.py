@@ -28,6 +28,7 @@ def standard_logging_setup(logger_name,
                            maxBytes=0,
                            backupCount=0,
                            log_path=None,
+                           level=None,
                            ):
     """
     standard setup for logging
@@ -48,6 +49,14 @@ def standard_logging_setup(logger_name,
         in present working directory.
 
         default: (the present working directory)/LOG_DIR_BASE
+    
+    level : int
+        Threshold for reporting messages with this logger.
+        Logging messages which are less severe than *level* will be ignored.
+
+        default: 10 (logging.DEBUG)
+
+        see: https://docs.python.org/3/library/logging.html#levels
     
     maxBytes : (optional) int
         Log file *rollover* begins whenever the current 
@@ -75,9 +84,9 @@ def standard_logging_setup(logger_name,
         os.mkdir(log_path)
     log_file = os.path.join(log_path, f"{file_name_base}.log")
 
-    # logging.basicConfig(level=logging.DEBUG)
+    level = level or logging.DEBUG
     logger = logging.getLogger(logger_name)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(level)
 
     stream_log_handler = logging.StreamHandler()
     logger.addHandler(stream_log_handler)

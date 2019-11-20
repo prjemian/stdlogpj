@@ -121,4 +121,12 @@ def standard_logging_setup(logger_name,
     file_log_handler.setFormatter(logging.Formatter(file_log_format))
     file_log_handler.formatter.default_msec_format = "%s.%03d"
 
+    # try:
+    #     # https://github.com/prjemian/stdlogpj/issues/4
+    #     ip = get_ipython()
+    #     ip.log.addHandler(file_log_handler) # is re-use of handler allowed?
+    #     # should make a new one instead
+    # except NameError:
+    #     pass    # probably not ipython session
+
     return logger

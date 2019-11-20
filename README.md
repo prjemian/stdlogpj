@@ -3,17 +3,21 @@ python logging done my way
 
 home: https://github.com/prjemian/stdlogpj
 
-INSTALL
+## INSTALL
 
     pip install stdlogpj
 
-USAGE:
+## USAGE
 
     import stdlogpj
     logger = stdlogpj.standard_logging_setup("demo")
     logger.info("hello")
 
-DEMO:
+This creates a `./.logs/demo.log` file (creating the `.logs` 
+subdirectory if it does not already exist).
+The third line logs the message *hello*.
+
+## DEMO
 
 ```python
 #!/usr/bin/env python
@@ -41,14 +45,7 @@ if __name__ == "__main__":
     logger.error("after main(): no error, really")
 ```
 
-## basic use
-
-    logger = stdlogpj.standard_logging_setup("basic")
-
-This creates a `./.logs/basic.log` file (creating the `.logs` 
-subdirectory if it does not already exist) for any output from `logger`.
-
-## directing logs to a specific directory
+## EXAMPLE: directing logs to a specific directory
 
 ```
 In [1]: import stdlogpj                                                                                                                                    
@@ -78,7 +75,7 @@ In [8]: !cat /tmp/example_logs/demo.log
 |2019-11-20 12:54:16.537|CRITICAL|18481|demo|<ipython-input-7-0babbd2c824b>|1|MainThread| - critical message
 ```
 
-## Rotate files and limit size
+## EXAMPLE: Rotate files and limit size
 
 Using features of the [*RotatingFileHandler*](https://docs.python.org/3/library/logging.handlers.html?highlight=rotatingfilehandler#logging.handlers.RotatingFileHandler), 
 it is possible to limit the size of the files by switching to a new log file,

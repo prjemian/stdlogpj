@@ -5,6 +5,7 @@ python logging done my way
 
 * terse output to stream (console)
 * extended output to log file in `.logs` subdirectory
+* can save logs in a named directory
 
 :see: https://docs.python.org/3/library/logging.html
 
@@ -26,6 +27,7 @@ def standard_logging_setup(logger_name,
                            file_name_base=None,
                            maxBytes=0,
                            backupCount=0,
+                           log_path=None,
                            ):
     """
     standard setup for logging
@@ -37,8 +39,15 @@ def standard_logging_setup(logger_name,
     
     file_name_base : str
         Part of the name to store the log file.
-        Full name is `f"<PWD>/LOG_DIR_BASE/{file_name_base}.log"`
+        Full name is `f"<log_path>/{file_name_base}.log"`
         in present working directory.
+    
+    log_path : str
+        Part of the name to store the log file.
+        Full name is `f"<log_path>/{file_name_base}.log"`
+        in present working directory.
+
+        default: (the present working directory)/LOG_DIR_BASE
     
     maxBytes : (optional) int
         Log file *rollover* begins whenever the current 
@@ -61,7 +70,7 @@ def standard_logging_setup(logger_name,
     """
     file_name_base = file_name_base or logger_name
 
-    log_path = os.path.join(os.getcwd(), LOG_DIR_BASE)
+    log_path = log_path or os.path.join(os.getcwd(), LOG_DIR_BASE)
     if not os.path.exists(log_path):
         os.mkdir(log_path)
     log_file = os.path.join(log_path, f"{file_name_base}.log")

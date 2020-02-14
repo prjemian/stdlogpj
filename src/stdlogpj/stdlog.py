@@ -19,9 +19,110 @@ import logging, logging.handlers
 import os
 
 LOG_DIR_BASE = ".logs"
+DEFAULT_LOGGING_LEVEL = logging.DEBUG
 
 
-__all__ = ["standard_logging_setup",]
+__all__ = [
+    "standard_logging_setup",
+    "consoleReportHandler",
+    "fileReportHandler"
+]
+
+
+class consoleReportHandler(logging.StreamHandler):
+    """
+    logging reports to the console should be brief
+
+    EXAMPLE::
+
+        logger.info(f"writing to SPEC file: {specwriter.spec_filename}")
+    
+    results in::
+
+        I Fri-12:43:19 - writing to SPEC file: /tmp/20200214-124319.dat
+
+    The first letter shows the (first letter of the) logging level.
+    The date/time shows the weekday abbreivation and the 24-hour time.
+    More details should be logged in a file with a different handler.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setFormatter(
+            logging.Formatter(
+                (
+                    # nice output format
+                    # https://docs.python.org/3/library/logging.html#logrecord-attributes
+                    "%(levelname)-.1s",		# only first letter
+                    " %(asctime)s"
+                    " - "
+                    "%(message)s"
+                ),
+                datefmt="%a-%H:%M:%S"))     # weekday & 24h time of day
+        self.formatter.default_msec_format = "%s.%03d"
+
+
+def fileReportHandler(
+        logger_name,
+        file_name_base=None,
+        maxBytes=0,
+        backupCount=0,
+        log_path=None,
+):
+    """
+    log reports to a file should be verbose to aid problem diagnosis
+
+    See ``standard_logging_setup()`` for parameter documentation.
+
+    EXAMPLE::
+
+        logger.info(f"writing to SPEC file: {specwriter.spec_filename}")
+    
+    results in::
+
+        |2020-02-14 12:43:19.180|INFO|12056|bluesky-session|callbacks|29|MainThread| - writing to SPEC file: /tmp/20200214-124319.dat
+
+    The metadata is distinct from the message.
+    The separator between metadata items is a vertical bar(``|``).
+    The metadata items are: asctime, levelname, PID, name, module, lineno, & threadName
+    A full date/time stamp is reported per ISO-8601.  
+    The reported time precision is limited to milliseconds.
+    The process identifier helps to identify which bluesky session
+    (such as restarts of the console).
+    The module name and line number localize the log message to specific code.
+    The thread name is reported as an additional diagnostic.
+    """
+
+    file_name_base = file_name_base or logger_name
+
+    log_path = log_path or os.path.join(os.getcwd(), LOG_DIR_BASE)
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+    log_file = os.path.join(log_path, f"{file_name_base}.log")
+
+    if maxBytes > 0 or backupCount > 0:
+        handler = logging.handlers.RotatingFileHandler(
+            log_file, maxBytes=maxBytes, backupCount=backupCount)
+    else:
+        handler = logging.FileHandler(log_file)
+    handler.setFormatter(
+        logging.Formatter(
+            (
+                "|%(asctime)s"
+                "|%(levelname)s"
+                "|%(process)d"
+                "|%(name)s"
+                "|%(module)s"
+                "|%(lineno)d"
+                "|%(threadName)s"
+                "| - "
+                "%(message)s"
+            )
+        ))
+    handler.formatter.default_msec_format = "%s.%03d"
+
+    return handler
+
 
 def standard_logging_setup(logger_name, 
                            file_name_base=None,
@@ -54,7 +155,7 @@ def standard_logging_setup(logger_name,
         Threshold for reporting messages with this logger.
         Logging messages which are less severe than *level* will be ignored.
 
-        default: 10 (logging.DEBUG)
+        default: 10 (``logging.DEBUG``), set by ``DEFAULT_LOGGING_LEVEL``
 
         see: https://docs.python.org/3/library/logging.html#levels
     
@@ -77,56 +178,20 @@ def standard_logging_setup(logger_name,
     log file rollover never occurs, so you generally want to set 
     *backupCount* to at least 1, and have a non-zero *maxBytes*.
     """
-    file_name_base = file_name_base or logger_name
 
-    log_path = log_path or os.path.join(os.getcwd(), LOG_DIR_BASE)
-    if not os.path.exists(log_path):
-        os.mkdir(log_path)
-    log_file = os.path.join(log_path, f"{file_name_base}.log")
-
-    level = level or logging.DEBUG
+    level = level or DEFAULT_LOGGING_LEVEL
     logger = logging.getLogger(logger_name)
     logger.setLevel(level)
 
-    stream_log_handler = logging.StreamHandler()
-    logger.addHandler(stream_log_handler)
-
-    # nice output format
-    # https://docs.python.org/3/library/logging.html#logrecord-attributes
-    stream_log_format = "%(levelname)-.1s"		# only first letter
-    stream_log_format += " %(asctime)s"
-    stream_log_format += " - "
-    stream_log_format += "%(message)s"
-    stream_log_handler.setFormatter(
-        logging.Formatter(
-            stream_log_format,
-            datefmt="%a-%H:%M:%S"))
-    stream_log_handler.formatter.default_msec_format = "%s.%03d"
-
-    if maxBytes > 0 or backupCount > 0:
-        file_log_handler = logging.handlers.RotatingFileHandler(
-            log_file, maxBytes=maxBytes, backupCount=backupCount)
-    else:
-        file_log_handler = logging.FileHandler(log_file)
-    logger.addHandler(file_log_handler)
-    file_log_format = "|%(asctime)s"
-    file_log_format += "|%(levelname)s"
-    file_log_format += "|%(process)d"
-    file_log_format += "|%(name)s"
-    file_log_format += "|%(module)s"
-    file_log_format += "|%(lineno)d"
-    file_log_format += "|%(threadName)s"
-    file_log_format += "| - "
-    file_log_format += "%(message)s"
-    file_log_handler.setFormatter(logging.Formatter(file_log_format))
-    file_log_handler.formatter.default_msec_format = "%s.%03d"
-
-    # try:
-    #     # https://github.com/prjemian/stdlogpj/issues/4
-    #     ip = get_ipython()
-    #     ip.log.addHandler(file_log_handler) # is re-use of handler allowed?
-    #     # should make a new one instead
-    # except NameError:
-    #     pass    # probably not ipython session
+    logger.addHandler(consoleReportHandler())
+    logger.addHandler(
+        fileReportHandler(
+            logger_name,
+            file_name_base=file_name_base,
+            maxBytes=maxBytes,
+            backupCount=backupCount,
+            log_path=log_path,
+        )
+    )
 
     return logger
